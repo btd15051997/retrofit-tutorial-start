@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchData() {
+        service = client.getAllNote()
         service.enqueue(object : Callback<List<Note>> {
             override fun onResponse(call: Call<List<Note>>, response: Response<List<Note>>) {
                 Toast.makeText(this@MainActivity, response.code().toString(), Toast.LENGTH_LONG)
@@ -72,12 +73,14 @@ class MainActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val list = response.body()
                     adapter.setNotes(list!!)
+                    swipe_layout.isRefreshing = false
                 }
             }
 
             override fun onFailure(call: Call<List<Note>>, t: Throwable) {
                 Toast.makeText(this@MainActivity, t.toString(), Toast.LENGTH_LONG)
                     .show()
+                swipe_layout.isRefreshing = false
             }
         })
     }
